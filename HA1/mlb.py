@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def kl(p_hat, p):
+def kl(p_hat, p, tol=1e-12):
     """
     Calculate the Kullback-Leibler divergence between two Bernoulli
     distributions.
@@ -16,6 +16,9 @@ def kl(p_hat, p):
         First probability value (often an empirical estimate) in [0, 1].
     p : float
         Second probability value in [0, 1].
+    tol : float, optional
+        Tolerance for clipping the input values to avoid numerical issues.
+        Default is 1e-12.
 
     Returns
     -------
@@ -27,10 +30,13 @@ def kl(p_hat, p):
     -----
     Input values are clipped to avoid numerical issues when p_hat or p is very
     close to 0 or 1, which would cause log(0) calculations.
+
+    This function corresponds to definition 2.14 in the lecture notes
+    "Machine Learning The Science of Selection under Uncertainty" by Yevgeny Seldin
     """
-    p_hat = np.clip(p_hat, 1e-12, 1 - 1e-12)
-    p = np.clip(p, 1e-12, 1 - 1e-12)
-    return p_hat * np.log(p_hat / p) + (1 - p_hat) * np.log((1 - p_hat) / (1 - p))
+    p_hat = np.clip(p_hat, tol, 1.0 - tol)
+    p = np.clip(p, tol, 1.0 - tol)
+    return p_hat * np.log(p_hat / p) + (1.0 - p_hat) * np.log((1.0 - p_hat) / (1.0 - p))
 
 
 def kl_upper_bound(p_hat, n, delta, tol=1e-12, max_iter=100):
@@ -80,3 +86,67 @@ def kl_upper_bound(p_hat, n, delta, tol=1e-12, max_iter=100):
         if hi - lo < tol:
             break
     return hi
+
+
+# --------------------------------------------------------------------
+# 3a.  Lower inverse via symmetry
+# --------------------------------------------------------------------
+def kl_lower_bound_symm(p_hat, n, delta, **kw):
+    """
+    Lower (1-δ)-confidence bound for p using the identity
+         KL(p̂‖p) = KL(1-p̂ ‖ 1-p).
+    """
+    return 1.0 - kl_upper_bound(1.0 - p_hat, n, delta, **kw)
+
+
+# --------------------------------------------------------------------
+# 3b.  Lower inverse via direct bisection
+# --------------------------------------------------------------------
+def kl_lower_bound_bisect(p_hat, n, delta, tol=1e-12, max_iter=60):
+    eps = np.log(1.0 / delta) / n
+
+    # --- special cases -----------------------------------------------
+    if p_hat <= 0.0:  # empirical mean 0
+        return 0.0
+    if p_hat >= 1.0:  # empirical mean 1
+        return np.exp(-eps)
+
+    # --- bisection on [0 , p_hat] ------------------------------------
+    lo, hi = 0.0, p_hat
+    for _ in range(max_iter):
+        mid = 0.5 * (lo + hi)
+        if kl(p_hat, mid) > eps:
+            lo = mid  # mid is too far to the left (KL too big)
+        else:
+            hi = mid  # mid still satisfies inequality
+        if hi - lo < tol:
+            break
+    return hi  # first point with KL > eps (lo last OK)
+
+
+# --------------------------------------------------------------------
+# 4.  Test cases comparing both versions
+# --------------------------------------------------------------------
+def test_lower_bounds():
+    rng = np.random.default_rng(1)
+    n = 1234
+    delta = 0.03
+    atol = 1e-10  # tolerance for equality check
+
+    # Edge cases ------------------------------------------------------
+    edge_ps = np.array([0.0, 1.0, 1e-12, 1 - 1e-12])
+    for p_hat in edge_ps:
+        lb1 = kl_lower_bound_symm(p_hat, n, delta)
+        lb2 = kl_lower_bound_bisect(p_hat, n, delta)
+        assert np.allclose(lb1, lb2, atol=atol)
+
+    # Random interior points -----------------------------------------
+    p_hats = rng.uniform(0, 1, size=200)
+    for p_hat in p_hats:
+        lb1 = kl_lower_bound_symm(p_hat, n, delta)
+        lb2 = kl_lower_bound_bisect(p_hat, n, delta)
+        assert np.allclose(lb1, lb2, atol=atol)
+
+    print(
+        "All lower–bound tests passed ({} points).".format(len(edge_ps) + len(p_hats))
+    )
