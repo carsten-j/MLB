@@ -1,0 +1,74 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\newcommand{\kl}{\mathrm{kl}}
+\begin{document}
+
+\section*{Exercise 2.3 (Numerical comparison of \kl{} inequality with its relaxations and with Hoeffding’s inequality)}
+
+Let $X_1,\dots,X_n$ be a sample of $n$ independent Bernoulli random variables with bias $p=\mathbb P(X=1)$.  Let
+\[
+  \hat p_n \;=\;\frac1n\sum_{i=1}^n X_i
+\]
+be the empirical average.  In this question you make a numerical comparison of the relative power of various bounds on $p$ we have studied.  Specifically, we consider the following bounds:
+
+\begin{enumerate}[label=\textbf{\Alph*.}]
+
+\item \textbf{Hoeffding’s inequality:} by Hoeffding’s inequality, with probability at least $1-\delta$,
+\[
+  p \;\le\; \hat p_n \;+\;\sqrt{\frac{\ln(1/\delta)}{2n}}.
+\]
+(\emph{“The Hoeffding’s bound”, which you are asked to plot, refers to the right‐hand side of the inequality above.})
+
+\item \textbf{The \kl{} inequality:} The bound on $p$ that follows from the \kl{}‐inequality (Theorem 2.27).
+
+We use 
+\[
+kl^{−1+}(\hat p, \epsilon) := max \{ p : p \in [0, 1]  \quad \textrm{and}\quad kl(\hat p \| p) < \epsilon \}   
+\]
+to denote
+the upper inverse of kl and 
+\[
+kl^{−1-}(\hat p, \epsilon) := min \{ p : p \in [0, 1]  \quad \textrm{and}\quad kl(\hat p \| p) < \epsilon \}  
+\]
+to denote the lower inverse
+of kl.
+
+
+\emph{Some guidance:} There is no closed‐form expression for computing the “upper inverse” 
+\[
+   \kl^{-1}_{+}(\hat p_n,\varepsilon)
+\]
+so it has to be computed numerically.  The function $\kl(\hat p_n\|p)$ is convex in $p$ (you are very welcome to pick some value of $\hat p_n$ and plot $\kl(\hat p_n\|p)$ as a function of $p$ to get an intuition about its shape).  We also have $\kl(\hat p_n\|\hat p_n)=0$, which is the minimum, and $\kl(\hat p_n\|p)$ monotonically increases in $p$, as $p$ grows from $\hat p_n$ up to $1$.  So you need to find the point $p\in[\hat p_n,1]$ at which the value of $\kl(\hat p_n\|p)$ grows above $\varepsilon$.  You could do it inefficiently by linear search or, exponentially more efficiently, by binary search.
+
+\emph{A technicality:} In the computation of \kl{} we define $0\ln0=0$.  In numerical calculations $0\ln0$ is undefined.  So you should treat $0\ln0$ operations separately, either by directly assigning the zero value or by replacing them with $0\ln1=0$.
+
+\item \textbf{Pinsker’s relaxation of the \kl{} inequality:} the bound on $p$ that follows from the \kl{}‐inequality by Pinsker’s inequality (Lemma 2.28).
+
+\item \textbf{Refined Pinsker’s relaxation of the \kl{} inequality:} the bound on $p$ that follows from the \kl{}‐inequality by refined Pinsker’s inequality (Corollary 2.32).
+
+\end{enumerate}
+
+\medskip
+\noindent
+In this task you should do the following:
+
+\begin{enumerate}[label=\arabic*.]
+\item Write down explicitly the four bounds on $p$ you are evaluating.
+\item Plot the four bounds on $p$ as a function of $\hat p_n$ for $\hat p_n\in[0,1]$, $n=1000$, and $\delta=0.01$.  
+  You should plot all four bounds in one figure, so that you can directly compare them.  
+  Clip all the bounds at 1, because otherwise they are meaningless and will only destroy the scale of the figure.
+\item Generate a “zoom in” plot for $\hat p_n\in[0,0.1]$.
+\item Compare Hoeffding’s lower bound on $p$ with the \kl{} lower bound on $p$ for the same values of $\hat p_n$, $n$, and $\delta$ in a separate figure (no need to consider the relaxations of the \kl{}).
+
+  \emph{Some guidance:} For computing the “lower inverse”
+  \[
+    \kl^{-1}_{-}(\hat p_n,\varepsilon)
+  \]
+  you can either adapt the function for computing the “upper inverse” you wrote earlier (and we leave it to you to think how to do this), or implement a dedicated function for computing the “lower inverse”.  Direct computation of the “lower inverse” works the same way as the “upper inverse”.  The function $\kl(\hat p_n\|p)$ is convex in $p$ with minimum $\kl(\hat p_n\|\hat p_n)=0$ achieved at $p=\hat p_n$, and monotonically \emph{decreasing} in $p$, as $p$ increases from 0 to $\hat p_n$.  So you need to find the point $p\in[0,\hat p_n]$ at which $\kl(\hat p_n\|p)$ decreases below $\varepsilon$.  You can do it by linear search or, more efficiently, by binary search.  And, as mentioned above, you can save code by reusing the “upper inverse” function to compute the “lower inverse”.  Whatever way you choose, explain in your main PDF submission how you computed both the upper and the lower bound.
+\item Write down your conclusions from the experiment.  For what values of $\hat p_n$ are which bounds tighter, and is the difference significant?
+\item[6.] \emph{Optional, not for submission.} You are welcome to experiment with other values of $n$ and $\delta$.
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,58 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\newcommand{\kl}{\mathrm{kl}}
+\begin{document}
+
+\begin{exercise}[Numerical comparison of the $\mathrm{kl}$ and split–$\mathrm{kl}$ inequalities]\label{ex:2.6}
+Compare the $\mathrm{kl}$ and split–$\mathrm{kl}$ inequalities.  
+Take a ternary random variable (a random variable taking three values)
+\[
+  X \in \Bigl\{0,\tfrac12,1\Bigr\}.
+\]
+Let
+\[
+  p_{0}= \Pr\!\bigl(X=0\bigr), \qquad
+  p_{\frac12}= \Pr\!\bigl(X=\tfrac12\bigr), \qquad
+  p_{1}= \Pr\!\bigl(X=1\bigr).
+\]
+Set \(p_{0}=p_{1}=(1-p_{\frac12})/2\), i.e.\ the probabilities of
+\(X=0\) and \(X=1\) are equal, and there is just one parameter
+\(p_{\frac12}\), which controls the probability mass of the central
+value.  Compare the two bounds as a function of
+\(p_{\frac12}\in[0,1]\).
+
+Let \(p=\mathbb{E}[X]\) (in the constructed example, for \emph{any}
+value of \(p_{\frac12}\) we have \(p=\tfrac12\) because
+\(p_{0}=p_{1}\)).  
+For each value of \(p_{\frac12}\) in a grid covering the
+interval \([0,1]\) draw a random sample
+\(X_{1},\dots ,X_{n}\) from the distribution we have constructed and
+let
+\[
+  \hat p_{n}= \frac1n \sum_{i=1}^{n} X_{i}.
+\]
+Generate a figure in which you plot the $\mathrm{kl}$ and the
+split–$\mathrm{kl}$ bounds on \(p-\hat p_{n}\) as a function of
+\(p_{\frac12}\) for \(p_{\frac12}\in[0,1]\).
+
+For the $\mathrm{kl}$ bound, the bound on \(p-\hat p_{n}\) is  
+\[
+  \operatorname{kl}^{-1+}\!\Bigl(\hat p_{n},
+        \tfrac{\ln\frac{n+1}{\delta}}{n}
+  \Bigr)
+  -\hat p_{n};
+\]
+note that, in contrast to Exercise~2.3, we subtract the value of
+\(\hat p_{n}\) \emph{after} the inversion of $\operatorname{kl}$ to get
+a bound on the \emph{difference} \(p-\hat p_{n}\) rather than on
+\(p\) itself.  
+For the split–$\mathrm{kl}$ bound you subtract \(\hat p_{n}\) from the
+right–hand side of the expression inside the probability statement in
+Theorem~2.34.
+
+Take \(n=100\) and \(\delta=0.05\).  
+Briefly reflect on the outcome of the comparison.
+\end{exercise}
+\end{document}
