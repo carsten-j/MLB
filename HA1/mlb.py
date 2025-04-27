@@ -88,19 +88,48 @@ def kl_upper_bound(p_hat, n, delta, tol=1e-12, max_iter=100):
     return hi
 
 
-# --------------------------------------------------------------------
-# 3a.  Lower inverse via symmetry
-# --------------------------------------------------------------------
 def kl_lower_bound_symm(p_hat, n, delta, **kw):
     """
-    Lower (1-δ)-confidence bound for p using the identity
-         KL(p̂‖p) = KL(1-p̂ ‖ 1-p).
+    Calculate the lower (1-δ)-confidence bound for a Bernoulli parameter p
+    by exploiting the symmetry of the KL divergence.
+
+    This function finds p_lower such that
+        KL(p_hat ‖ p_lower) ≤ log(1/δ) / n
+    using the identity
+        KL(p_hat ‖ p) = KL(1 - p_hat ‖ 1 - p).
+    Internally, it computes the upper bound on the complementary probability
+    (1 - p) via kl_upper_bound and returns its complement.
+
+    Parameters
+    ----------
+    p_hat : float
+        Empirical estimate of the Bernoulli probability ∈ [0, 1].
+    n : int
+        Number of independent trials.
+    delta : float
+        Confidence parameter ∈ (0, 1). The guarantee is that
+        the true p ≥ p_lower with probability ≥ 1 - δ.
+    **kw : dict
+        Additional keyword arguments passed to kl_upper_bound
+        (e.g., tol, max_iter).
+
+    Returns
+    -------
+    float
+        Lower confidence bound p_lower such that
+        Pr[p ≥ p_lower] ≥ 1 - δ.
+
+    Notes
+    -----
+    - Special cases for p_hat = 0 and p_hat = 1 are handled by
+      kl_upper_bound on the complementary probability.
+    - See kl_upper_bound for details on the binary‐search algorithm.
     """
     return 1.0 - kl_upper_bound(1.0 - p_hat, n, delta, **kw)
 
 
 # --------------------------------------------------------------------
-# 3b.  Lower inverse via direct bisection
+# Lower inverse via direct bisection
 # --------------------------------------------------------------------
 def kl_lower_bound_bisect(p_hat, n, delta, tol=1e-12, max_iter=60):
     eps = np.log(1.0 / delta) / n
@@ -125,7 +154,7 @@ def kl_lower_bound_bisect(p_hat, n, delta, tol=1e-12, max_iter=60):
 
 
 # --------------------------------------------------------------------
-# 4.  Test cases comparing both versions
+# Test cases comparing both versions
 # --------------------------------------------------------------------
 def test_lower_bounds():
     rng = np.random.default_rng(1)

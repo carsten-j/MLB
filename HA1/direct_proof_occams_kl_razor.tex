@@ -1,0 +1,91 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{hyperref}
+
+\title{Direct Proof of Occam's kl-razor Inequality}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Theorem Statement}
+\begin{theorem}[Occam's kl-razor inequality]
+Let $S$ be an i.i.d. sample of $n$ points, let $\ell$ be a loss function bounded in the $[0, 1]$ interval, let $\mathcal{H}$ be countable, and let $\pi(h)$ be such that it is independent of the sample $S$ and satisfies $\pi(h) \geq 0$ for all $h$ and $\sum_{h\in\mathcal{H}} \pi(h) \leq 1$. Let $\delta \in (0,1)$. Then
+\begin{equation}
+\mathbb{P}\left(\exists h \in \mathcal{H} : \text{kl}(\hat{L}(h, S)\|L(h)) \geq \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) \leq \delta.
+\end{equation}
+\end{theorem}
+
+\section{Direct Proof}
+
+We will provide a direct proof of the Occam's kl-razor inequality.
+
+\subsection{Step 1: Apply Chernoff's inequality for a single hypothesis}
+
+For any fixed hypothesis $h \in \mathcal{H}$, since $S$ is an i.i.d. sample and the loss function is bounded in $[0,1]$, we can apply Chernoff's bound in the form of the KL divergence inequality:
+
+\begin{equation}
+\mathbb{P}(\text{kl}(\hat{L}(h,S)\|L(h)) \geq \varepsilon) \leq e^{-n\varepsilon}
+\end{equation}
+
+For any $\varepsilon > 0$.
+
+This bound is a refinement of the standard Chernoff bound and relates the probability of deviation between the empirical loss $\hat{L}(h,S)$ and the true loss $L(h)$ in terms of their KL divergence.
+
+\subsection{Step 2: Set appropriate $\varepsilon$ for each hypothesis}
+
+For each hypothesis $h$, we set:
+
+\begin{equation}
+\varepsilon_h = \frac{\ln \frac{1}{\pi(h)\delta}}{n}
+\end{equation}
+
+This gives us:
+\begin{align}
+\mathbb{P}\left(\text{kl}(\hat{L}(h,S)\|L(h)) \geq \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) &\leq e^{-n \cdot \frac{\ln \frac{1}{\pi(h)\delta}}{n}} \\
+&= e^{-\ln \frac{1}{\pi(h)\delta}} \\
+&= \pi(h)\delta
+\end{align}
+
+\subsection{Step 3: Union bound across all hypotheses}
+
+Now we apply the union bound over all $h \in \mathcal{H}$:
+
+\begin{align}
+\mathbb{P}\left(\exists h \in \mathcal{H} : \text{kl}(\hat{L}(h,S)\|L(h)) \geq \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) &\leq \sum_{h \in \mathcal{H}} \mathbb{P}\left(\text{kl}(\hat{L}(h,S)\|L(h)) \geq \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) \\
+&\leq \sum_{h \in \mathcal{H}} \pi(h)\delta \\
+&= \delta \sum_{h \in \mathcal{H}} \pi(h) \\
+&\leq \delta \cdot 1 \\
+&= \delta
+\end{align}
+
+where the last inequality follows from the condition that $\sum_{h \in \mathcal{H}} \pi(h) \leq 1$.
+
+\subsection{Step 4: Restate the result}
+
+Taking the complement of the probability, we have:
+
+\begin{equation}
+\mathbb{P}\left(\forall h \in \mathcal{H} : \text{kl}(\hat{L}(h,S)\|L(h)) < \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) \geq 1 - \delta
+\end{equation}
+
+Which is equivalent to the statement in the theorem.
+
+\section{Importance of $\pi(h)$ being independent of $S$}
+
+The critical step where we use the independence of $\pi(h)$ from the sample $S$ is in Step 3 when applying the union bound. If $\pi(h)$ were to depend on $S$, we could not treat it as a fixed quantity when calculating the probability.
+
+This independence is necessary for several reasons:
+
+\begin{enumerate}
+\item Without independence, $\pi(h)$ becomes a random variable that depends on the same sample $S$ we're using to compute $\hat{L}(h,S)$.
+\item This dependency would invalidate our application of Chernoff's bound, as the choice of $\varepsilon$ would also become sample-dependent.
+\item If $\pi(h)$ depends on $S$, we could potentially "cheat" by assigning higher probability to hypotheses that perform well on the specific sample $S$, artificially reducing the bound.
+\end{enumerate}
+
+The independence requirement ensures that our prior distribution over hypotheses is truly a prior - determined before seeing the data - which is essential for the theoretical guarantees to hold. Without this independence, we could retroactively choose a prior that makes the bound meaningless by overfitting to the sample.
+
+\end{document}

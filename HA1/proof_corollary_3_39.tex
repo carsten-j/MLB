@@ -1,0 +1,123 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{hyperref}
+
+\title{Proof of Corollary 3.39 (Explicit Form of Occam's kl-razor Inequality)}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Corollary Statement}
+\begin{corollary}[Explicit Form of Occam's kl-razor Inequality]
+Under the assumptions of Theorem 3.38 (Occam's kl-razor inequality), the following holds:
+\begin{equation}
+\mathbb{P}\left(\exists h \in \mathcal{H} : L(h) \geq \hat{L}(h, S) + \sqrt{\frac{2\hat{L}(h,S)\ln \frac{1}{\pi(h)\delta}}{n}} + \frac{2\ln \frac{1}{\pi(h)\delta}}{n}\right) \leq \delta.
+\end{equation}
+\end{corollary}
+
+\section{Proof}
+
+We will derive the explicit bound in Corollary 3.39 from Theorem 3.38.
+
+\subsection{Step 1: Begin from Theorem 3.38}
+
+From Theorem 3.38, we know that with probability at least $1-\delta$, for all $h \in \mathcal{H}$:
+
+\begin{equation}
+\text{kl}(\hat{L}(h,S)\|L(h)) < \frac{\ln \frac{1}{\pi(h)\delta}}{n}
+\end{equation}
+
+\subsection{Step 2: Use the Pinsker-type inequality for KL divergence}
+
+For $p, q \in [0,1]$, the following inequality holds:
+\begin{equation}
+\text{kl}(p\|q) \geq \frac{(q-p)^2}{2q(1-q)} \cdot \mathbf{1}_{q > p} + \frac{(p-q)^2}{2p(1-p)} \cdot \mathbf{1}_{p > q}
+\end{equation}
+
+Where $\mathbf{1}$ is the indicator function.
+
+Since we are interested in the scenario where $L(h) > \hat{L}(h,S)$ (the true loss exceeds the empirical loss), we focus on:
+\begin{equation}
+\text{kl}(\hat{L}(h,S)\|L(h)) \geq \frac{(L(h) - \hat{L}(h,S))^2}{2L(h)(1-L(h))} \quad \text{when } L(h) > \hat{L}(h,S)
+\end{equation}
+
+\subsection{Step 3: Combine with the KL bound from Theorem 3.38}
+
+From Theorem 3.38, we have:
+\begin{equation}
+\text{kl}(\hat{L}(h,S)\|L(h)) < \frac{\ln \frac{1}{\pi(h)\delta}}{n}
+\end{equation}
+
+When $L(h) > \hat{L}(h,S)$, combining these inequalities:
+\begin{equation}
+\frac{(L(h) - \hat{L}(h,S))^2}{2L(h)(1-L(h))} < \frac{\ln \frac{1}{\pi(h)\delta}}{n}
+\end{equation}
+
+\subsection{Step 4: Solve for the upper bound on $L(h)$}
+
+Multiplying both sides by $2L(h)(1-L(h))$:
+\begin{equation}
+(L(h) - \hat{L}(h,S))^2 < \frac{2L(h)(1-L(h))\ln \frac{1}{\pi(h)\delta}}{n}
+\end{equation}
+
+Since $L(h) \leq 1$, we can use the bound $(1-L(h)) \leq 1$ to simplify:
+\begin{equation}
+(L(h) - \hat{L}(h,S))^2 < \frac{2L(h)\ln \frac{1}{\pi(h)\delta}}{n}
+\end{equation}
+
+Taking the square root of both sides:
+\begin{equation}
+L(h) - \hat{L}(h,S) < \sqrt{\frac{2L(h)\ln \frac{1}{\pi(h)\delta}}{n}}
+\end{equation}
+
+\subsection{Step 5: Address the challenge of $L(h)$ appearing on both sides}
+
+Since $L(h)$ appears on both sides of the inequality, we need to solve for it. We use the approach of setting $L(h) \leq \hat{L}(h,S) + \epsilon$ for some $\epsilon$ and then solving for the appropriate value of $\epsilon$.
+
+Substituting $L(h) \leq \hat{L}(h,S) + \epsilon$ on the right-hand side:
+\begin{equation}
+L(h) - \hat{L}(h,S) < \sqrt{\frac{2(\hat{L}(h,S) + \epsilon)\ln \frac{1}{\pi(h)\delta}}{n}}
+\end{equation}
+
+For the inequality to be self-consistent, we need to find an $\epsilon$ that satisfies:
+\begin{equation}
+\epsilon < \sqrt{\frac{2(\hat{L}(h,S) + \epsilon)\ln \frac{1}{\pi(h)\delta}}{n}}
+\end{equation}
+
+This is a quadratic inequality in $\sqrt{\epsilon}$. Solving it gives:
+\begin{equation}
+\epsilon < \sqrt{\frac{2\hat{L}(h,S)\ln \frac{1}{\pi(h)\delta}}{n}} + \frac{2\ln \frac{1}{\pi(h)\delta}}{n}
+\end{equation}
+
+\subsection{Step 6: Finalize the bound}
+
+Therefore, with probability at least $1-\delta$, for all $h \in \mathcal{H}$:
+\begin{equation}
+L(h) < \hat{L}(h,S) + \sqrt{\frac{2\hat{L}(h,S)\ln \frac{1}{\pi(h)\delta}}{n}} + \frac{2\ln \frac{1}{\pi(h)\delta}}{n}
+\end{equation}
+
+Rearranging to match the form in Corollary 3.39:
+\begin{equation}
+\mathbb{P}\left(\exists h \in \mathcal{H} : L(h) \geq \hat{L}(h, S) + \sqrt{\frac{2\hat{L}(h,S)\ln \frac{1}{\pi(h)\delta}}{n}} + \frac{2\ln \frac{1}{\pi(h)\delta}}{n}\right) \leq \delta
+\end{equation}
+
+This completes the proof of Corollary 3.39.
+
+\section{Significance of the Corollary}
+
+This corollary provides several important advantages over the original KL-divergence formulation:
+
+\begin{enumerate}
+\item It provides an explicit upper bound on the true loss $L(h)$ in terms of the empirical loss $\hat{L}(h,S)$
+\item It clearly shows the convergence rate through the terms $\sqrt{\frac{2\hat{L}(h,S)\ln \frac{1}{\pi(h)\delta}}{n}}$ and $\frac{2\ln \frac{1}{\pi(h)\delta}}{n}$
+\item The first term scales with $\sqrt{\frac{\hat{L}(h,S)}{n}}$, showing faster convergence for hypotheses with lower empirical error
+\item The second term scales with $\frac{1}{n}$, showing the effect of the complexity term $\pi(h)$
+\end{enumerate}
+
+This formulation makes the trade-off between empirical error and complexity more explicit and interpretable than the original KL divergence form.
+
+\end{document}
