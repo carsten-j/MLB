@@ -1,20 +1,17 @@
 \section{Occam's razor with \texorpdfstring{$\kl$}{kl} inequality (30 points) [Yevgeny]}
 
 I have not be able to provide a direct proof of Occam's razor with $\kl$ inequality.
-As an alternative I used a "backward" approach going from the desired result and move backwards. For this approach I end up with the following in-equality
+As an alternative I used a "backward" approach going from the desired result moving backwards to the assumptions of the theorem. Using this approach I end up with the following in-equality
 
 \begin{equation}\label{eq:assumption}
-\mathbb{P}(\kl(\hat{L}(h,S)\|L(h)) \geq \varepsilon) \leq e^{-n\varepsilon}
+\P(\kl(\hat{L}(h,S)\|L(h)) \geq \varepsilon) \leq e^{-n\varepsilon}
 \end{equation}
-that should hold for any $\varepsilon > 0$. 
-
-It looks like a $\KL$-version of Chernoff's bound but I have not be able to proof that it is correct. Assuming eq. \ref{eq:assumption} is correct the proof goes like this.
-
+that should hold for any $\varepsilon > 0$. It looks like a $\kl$-version of Chernoff's bound\footnote{See \cite{mitzenmacherProbabilityComputingRandomized2005} for Chernoff bounds.} but I have not be able to proof that it is correct. Assuming eq. \ref{eq:assumption} is correct the proof goes like this.
 
 \begin{theorem}[Occam's kl-razor inequality]
-Let $S$ be an i.i.d. sample of $n$ points, let $\ell$ be a loss function bounded in the interval $[0, 1]$, let $\mathcal{H}$ be countable and let $\pi(h)$ be such that it is independent of the sample $S$ and satisfies $\pi(h) \geq 0$ for all $h$ and $\sum_{h\in\mathcal{H}} \pi(h) \leq 1$. Let $\delta \in (0,1)$. Then
+Let $S$ be an i.i.d. sample of $n$ points, let $\ell$ be a loss function bounded in the interval $[0, 1]$, let $\HH$ be countable and let $\pi(h)$ be such that it is independent of the sample $S$ and satisfies $\pi(h) \geq 0$ for all $h$ and $\sum_{h\in\mathcal{H}} \pi(h) \leq 1$. Let $\delta \in (0,1)$. Then
 \begin{equation*}
-\mathbb{P}\left(\exists h \in \mathcal{H} : \text{kl}(\hat{L}(h, S)\|L(h)) \geq \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) \leq \delta.
+\P\left(\exists h \in \HH : \kl(\hat{L}(h, S)\|L(h)) \geq \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) \leq \delta.
 \end{equation*}
 \end{theorem}
 
@@ -27,17 +24,17 @@ Define for each hypothesis $h$:
 
 Using eq. \ref{eq:assumption} this gives us:
 \begin{equation*}
-\mathbb{P}\left(\text{kl}(\hat{L}(h,S)\|L(h)) \geq \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) \leq e^{-n \cdot \frac{\ln \frac{1}{\pi(h)\delta}}{n}} 
+\P\left(\kl(\hat{L}(h,S)\|L(h)) \geq \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) \leq e^{-n \cdot \frac{\ln \frac{1}{\pi(h)\delta}}{n}} 
 = e^{-\ln \frac{1}{\pi(h)\delta}} 
 = \pi(h)\delta
 \end{equation*}
 
-Now we apply the union bound over all $h \in \mathcal{H}$:
+Now we apply the union bound over all $h \in \HH$:
 
 \begin{align*}
-\mathbb{P}\left(\exists h \in \mathcal{H} : \text{kl}(\hat{L}(h,S)\|L(h)) \geq \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) &\leq \sum_{h \in \mathcal{H}} \mathbb{P}\left(\text{kl}(\hat{L}(h,S)\|L(h)) \geq \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) \\
-&\leq \sum_{h \in \mathcal{H}} \pi(h)\delta 
-= \delta \sum_{h \in \mathcal{H}} \pi(h) 
+\P\left(\exists h \in \HH : \kl(\hat{L}(h,S)\|L(h)) \geq \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) &\leq \sum_{h \in \HH} \P\left(\kl(\hat{L}(h,S)\|L(h)) \geq \frac{\ln \frac{1}{\pi(h)\delta}}{n}\right) \\
+&\leq \sum_{h \in \HH} \pi(h)\delta 
+= \delta \sum_{h \in \HH} \pi(h) 
 \leq \delta \cdot 1 
 = \delta
 \end{align*}
@@ -54,31 +51,24 @@ The critical step where we use the independence of $\pi(h)$ from the sample $S$ 
 \begin{corollary}
 Under the assumptions of Theorem 3.38 (Occam's kl-razor inequality), the following holds:
 \begin{equation}
-\mathbb{P}\left(\exists h \in \mathcal{H} : L(h) \geq \hat{L}(h, S) + \sqrt{\frac{2\hat{L}(h,S)\ln \frac{1}{\pi(h)\delta}}{n}} + \frac{2\ln \frac{1}{\pi(h)\delta}}{n}\right) \leq \delta.
+\P\left(\exists h \in \HH : L(h) \geq \hat{L}(h, S) + \sqrt{\frac{2\hat{L}(h,S)\ln \frac{1}{\pi(h)\delta}}{n}} + \frac{2\ln \frac{1}{\pi(h)\delta}}{n}\right) \leq \delta.
 \end{equation}
 \end{corollary}
 
 \begin{proof}
-From Theorem 3.38, with probability at least $1-\delta$, for all $h \in \mathcal{H}$:
+From the above Theorem, with probability at least $1-\delta$, for all $h \in \HH$:
 $$\kl(\hat{L}(h,S)\|L(h)) < \frac{\ln\frac{1}{\pi(h)\delta}}{n}$$
 
-We need to convert this $\KL$-divergence bound into an explicit bound on $L(h)$.
-
 For $p, q \in [0,1]$ with $p \leq q$, we can use the following lower bound on KL-divergence:
-$$\text{kl}(p||q) \geq \frac{(q-p)^2}{2q}.$$
-This is from corollary 2.31 (Reﬁned Pinsker’s inequality) in the lecture notes.
+\begin{equation*}
+\frac{(q-p)^2}{2q} \leq \kl(p||q).
+\end{equation*}
+This is from corollary 2.31 (Reﬁned Pinsker’s inequality) in the lecture notes \cite{seldinMachineLearningScience2025}. Here we are interested in the case where $\hat{L}(h,S) \leq L(h)$, we can apply this with $p = \hat{L}(h,S) := \hat{L}$ and $q = L(h) := L$, where the last equality is simplification of the notation.
 
-Here we are interested in the case where $\hat{L}(h,S) \leq L(h)$, we can apply this with $p = \hat{L}(h,S)$ and $q = L(h)$.
-
-To simplicity notation, we  denote $\hat{L} = \hat{L}(h,S)$ and $L = L(h)$.
-
-$$\text{kl}(\hat{L}||L) \geq \frac{(L-\hat{L})^2}{2L}$$
+$$\frac{(L-\hat{L})^2}{2L} \leq \text{kl}(\hat{L}||L)$$
 
 Now theorem 3.38 give us, with probability at least $1-\delta$:
 $$\frac{(L-\hat{L})^2}{2L} < \frac{\ln\frac{1}{\pi(h)\delta}}{n}$$
-
-Solving for $L$:
-$$(L-\hat{L})^2 < \frac{2L\ln\frac{1}{\pi(h)\delta}}{n}$$
 
 This is a quadratic inequality in $L$, that we can re-write to:
 $$L^2 - L\left(2\hat{L} + \frac{2\ln\frac{1}{\pi(h)\delta}}{n}\right) + \hat{L}^2 < 0$$
@@ -87,7 +77,7 @@ Using the quadratic formula, the solutions to $aL^2 + bL + c = 0$ with $$a = 1, 
 
 $$L = \hat{L} + \frac{\ln\frac{1}{\pi(h)\delta}}{n} \pm \sqrt{\frac{2\hat{L}\ln\frac{1}{\pi(h)\delta}}{n} + \frac{(\ln\frac{1}{\pi(h)\delta})^2}{n^2}}$$
 
-For a quadratic inequality of the form $aL^2 + bL + c < 0$ with $a > 0$, the solution is between the two roots. We are looking for an upper bound for $L$, which will be the larger root:
+Please see \ref{sec:derivation} for details on calculating the roots. For a quadratic inequality of the form $aL^2 + bL + c < 0$ with $a > 0$, the solution is between the two roots. We are looking for an upper bound for $L$, which will be the larger root:
 
 $$L < \hat{L} + \frac{\ln\frac{1}{\pi(h)\delta}}{n} + \sqrt{\frac{2\hat{L}\ln\frac{1}{\pi(h)\delta}}{n} + \frac{(\ln\frac{1}{\pi(h)\delta})^2}{n^2}}$$
 
@@ -95,13 +85,13 @@ Using that for non-negative $a$ and $b$ we have $\sqrt{a+b} \leq \sqrt{a} + \sqr
 
 $$L < \hat{L} + \frac{\ln\frac{1}{\pi(h)\delta}}{n} + \sqrt{\frac{2\hat{L}\ln\frac{1}{\pi(h)\delta}}{n}} + \frac{\ln\frac{1}{\pi(h)\delta}}{n} = \hat{L} + \sqrt{\frac{2\hat{L}\ln\frac{1}{\pi(h)\delta}}{n}} + \frac{2\ln\frac{1}{\pi(h)\delta}}{n}$$
 
-Hence with probability at least $1-\delta$, for all $h \in \mathcal{H}$:
+Hence with probability at least $1-\delta$, for all $h \in \HH$:
 $$L(h) < \hat{L}(h,S) + \sqrt{\frac{2\hat{L}(h,S)\ln\frac{1}{\pi(h)\delta}}{n}} + \frac{2\ln\frac{1}{\pi(h)\delta}}{n}$$
 
 Using the complement event:
-$$\mathbb{P}\left(\exists h \in \mathcal{H} : L(h) \geq \hat{L}(h,S) + \sqrt{\frac{2\hat{L}(h,S)\ln\frac{1}{\pi(h)\delta}}{n}} + \frac{2\ln\frac{1}{\pi(h)\delta}}{n}\right) \leq \delta$$
+$$\P\left(\exists h \in \mathcal{H} : L(h) \geq \hat{L}(h,S) + \sqrt{\frac{2\hat{L}(h,S)\ln\frac{1}{\pi(h)\delta}}{n}} + \frac{2\ln\frac{1}{\pi(h)\delta}}{n}\right) \leq \delta$$
 
-which is exactly the statement of Corollary 3.39.
+which is exactly the statement of the Corollary.
 \end{proof}
 
 \subsection*{Discussion  of the Corollary}

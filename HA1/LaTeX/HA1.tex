@@ -8,19 +8,23 @@
 \usepackage{amssymb}
 \usepackage{lipsum}
 \usepackage{amsthm}
-
 \usepackage{graphicx}  % For including images
-
 \usepackage{xcolor}  % For a colorfull presentation
 \usepackage{listings}  % For presenting code 
-
 \usepackage{hyperref}
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+\addbibresource{HA1.bib} %Import the bibliography file
 
-\newtheorem{theorem}{Theorem}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{corollary}{Corollary}
 
 \setlength\parindent{0pt}
+\renewcommand\qedsymbol{$\blacksquare$}
 
 % Definition of a style for code, matter of taste
 \lstdefinestyle{mystyle}{
@@ -74,6 +78,7 @@
 \appendix
 
 \input{appendix}
-%\bibliography{bibliography}  % If you have some references, use BibTeX
-
+%\bibliography{HA1.bib}  % If you have some references, use BibTeX
+\printbibliography %Prints bibliography
+\nocite{*}
 \end{document}

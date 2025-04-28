@@ -28,6 +28,8 @@ and in figure \ref{fig:zoomed_upper_bounds} we plot the same upper bounds "zoome
     \end{figure}
 \end{center}
 
+The implementation of the upper bound calculations are listed here \ref{lst:upper_bounds}.
+
 \subsection*{Plot of lower bounds}
 The lower bounds are shown in figure \ref{fig:lower_bounds}.
 \begin{center}
@@ -39,15 +41,15 @@ The lower bounds are shown in figure \ref{fig:lower_bounds}.
 \end{center}
 
 \subsection*{Computation of upper and lower inverse of $\kl$}
-Please see \ref{lst:upper_inverse} for the implementation of the upper inverse of $\kl$. To compute the lower inverse of $\kl$, we note that $\kl(a\|b)=\kl(1-a\|1-b)$ for all $a,b \in [0,1]$. So $\kl(\hat{p}\|p) \leq \epsilon$ is equivalent to $\kl(1-\hat{p}\|1-p) \leq \epsilon$. For $q=1-p$ the sets ${p : \kl(\hat{p}\|p) \leq \epsilon}$ and ${q : \kl(1-\hat{p}\|q) \leq \epsilon}$ are identical.
+Please see code listing \ref{lst:upper_inverse} for the implementation of the upper inverse of $\kl$. To compute the lower inverse of $\kl$, we note that $\kl(a\|b)=\kl(1-a\|1-b)$ for all $a,b \in [0,1]$. So $\kl(\hat{p}\|p) \leq \epsilon$ is equivalent to $\kl(1-\hat{p}\|1-p) \leq \epsilon$. For $q=1-p$ the sets $\{p : \kl(\hat{p}\|p) \leq \epsilon\}$ and $\{q : \kl(1-\hat{p}\|q) \leq \epsilon\}$ are identical.
 \\[2mm]
 By the definition of the upper inverse we have 
 \begin{equation*}
-    q^+ = \kl^{-1^+} (1-\hat{p}, \epsilon) = \max \{q \geq 1-\hat{p} : \kl(1-\hat{p}\|q) \leq \epsilon \}
+    q^+ = \klui(1-\hat{p}, \epsilon) = \max \{q \geq 1-\hat{p} : \kl(1-\hat{p}\|q) \leq \epsilon \}
 \end{equation*}
 We now replace $q$ with $1-p$ to obtain
 \begin{equation*}
-    p^- = 1-q^+ = 1-  \kl^{-1^+} (1-\hat{p}, \epsilon) = \min \{p \leq \hat{p}  : \kl(\hat{p}\|p) \leq \epsilon \} = \kl^{-1^-}(\hat{p}, \epsilon )
+    p^- = 1-q^+ = 1-  \klui(1-\hat{p}, \epsilon) = \min \{p \leq \hat{p}  : \kl(\hat{p}\|p) \leq \epsilon \} = \klli(\hat{p}, \epsilon )
 \end{equation*}
 So the lower inverse can be obtained from the upper inverse through the code:
 \lstinputlisting[caption=Lower inverse, label={lst:lower_inverse}, language=python, style=myStyle]{code/lower_inverse.py}

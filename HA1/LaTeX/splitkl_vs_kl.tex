@@ -13,19 +13,19 @@ probability mass of the central value.
 We now want to compare the two bounds $\kl$ and split-$\kl$ as a function of \(p_{\frac12}\in[0,1]\). The upper $\kl$ bound for \(p-\hat p_{n}\) is given by
 \[
 \klui\Bigl(\hat p_{n},
-        \tfrac{\ln\frac{n+1}{\delta}}{n}
+        \tfrac{\ln\frac{1}{\delta}}{n}
   \Bigr)
   -\hat p_{n}
 \]
-and the split-$\mathrm{kl}$ bound is
+and the split-$\kl$ bound is
 \begin{equation} \label{eq:split-kl-bounds}
    b_{0}+\sum_{j=1}^{K} \Bigg(  \alpha_{j}\,
-   k_{1}^{-1,+}\!\Bigl(\hat{p}_{\mid j},
+   \klui\Bigl(\hat{p}_{\mid j},
                        \frac{1}{n}\ln\!\frac{K}{\delta}\Bigr) - \hat{p}_{\mid j} \Bigg),
 \end{equation}
 where $\hat{p}_{\mid j}= \frac{1}{n}\sum_{i=1}^{n}X_{i\mid j}$ and $X_{i\mid j}= \1[X_{i}\ge b_{j}]$ denotes the elements of the binary decomposition of $X_{i}$.
 \\[2mm]
-For this experiment, we find that the domain is $b_0=0, b_1 = 0.5, b_2=1$ and the $K=2$ segments are $\alpha_1=\alpha_2=1/2$. So eq. \ref{eq:split-kl-bounds} simplifies to:
+For this experiment, we find that the domain is $b_0=0, b_1 = 0.5, b_2=1$ and the $K=2$ segments are $\alpha_1=\alpha_2=\frac{1}{2}$. So eq. \ref{eq:split-kl-bounds} simplifies to:
 \[
 \tfrac{1}{2} \Big( \klui(\hat{p}_{\mid 1}, \epsilon ) - \hat{p}_{\mid 1} \Big)
 + \tfrac{1}{2}\Big( \klui(\hat{p}_{ \mid2}, \epsilon ) - \hat{p}_{\mid 2} \Big),   
@@ -40,18 +40,11 @@ In figure \ref{fig:splitkl} we see a plot of $\kl$ and split-$\kl$.
 
 
 \subsection*{Brief discussion}
-Because the true mean is fixed at 0.5 for every choice of $p_{1/2}$, the empirical mean
-fluctuates around $0.5$, with variance depending on the distribution’s
-shape. 
-
-The dashed curve is the realized error in the single sample that was
-drawn for each $p_{1/2}$
-
-Let us consider what happens when $p_{\frac{1}{2}} \rightarrow 1$. In that case most of 
-the probability mass is pushed to the center value 0.5, and the two outcomes (0 and 1) become very rare since their probabilities $p0 = p1 = (1-p_{\frac{1}{2}})/2 \rightarrow  0$.
-Consequently the variance of X given by $\Var(X)=0.25(1 -p_{\frac{1}{2}}) \rightarrow  0$.
-Hence the empirical mean is in practice locked very tightly
-around the true mean 0.5 once $p_{\frac{1}{2}}$ get closer to 1.
+Because the true mean is fixed at 0.5 for every choice of $p_{1/2}$, the empirical mean fluctuates around $0.5$, with variance depending on the shape of the distribution. 
+\\[2mm]
+The dashed curve is the error realized in the single sample that was drawn for each $p_{1/2}$
+\\[2mm]
+Let us consider what happens when $p_{\frac{1}{2}} \rightarrow 1$. In that case most of the probability mass is pushed to the center value 0.5, and the two outcomes (0 and 1) become very rare since their probabilities $p0 = p1 = (1-p_{\frac{1}{2}})/2 \rightarrow  0$. Consequently, the variance of X is given by $\Var(X)=0.25(1 -p_{\frac{1}{2}}) \rightarrow  0$. Hence the empirical mean is in practice locked very tightly around the true mean 0.5 once $p_{\frac{1}{2}}$ gets closer to 1.
 \\[2mm]
 Split-$\kl$ decomposes $X$ into the two binary indicators:
 $$
@@ -64,10 +57,7 @@ Their expectations are
 \end{align*}
 as $p_{\frac{1}{2}} \rightarrow 1$.
 \\[2mm]
-When a Bernoulli parameter is very close to 1 or 0, the
-$\kl$-inverse difference $\klui(\hat{p},\epsilon)-\hat{p}$ is proportional to $\hat{p}(1-\hat{p})$ and therefore goes to zero.
+When a Bernoulli parameter is very close to 0 or 1, the $\kl$-inverse difference $\klui(\hat{p},\epsilon)-\hat{p}$ is proportional to $\hat{p}(1-\hat{p})$ and therefore goes to zero.
 \\[2mm]
-For the split-$\kl$ bound these two tiny differences are multiplied by
-$\alpha_1 = \alpha_2 = 0.5$ and then added, so the whole bound collapses
-toward 0 as soon as $X$ almost never takes the extreme values.
-That is why in figure \ref{fig:splitkl} observe split-$\kl$ close to 0 for $p_{\frac{1}{2}}$ close to 1.
+For the split-$\kl$ bound these two tiny differences are multiplied by $\alpha_1 = \alpha_2 = 0.5$ and then added, so the whole bound collapses toward 0 as soon as $X$ almost never takes the extreme values.
+That is why in figure \ref{fig:splitkl} we observe a split-$\kl$ close to 0 for $p_{\frac{1}{2}}$ close to 1.

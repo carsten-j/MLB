@@ -1,26 +1,26 @@
 \section*{Python code}
 
+\lstinputlisting[caption=Upper bound calculations, label={lst:upper_bounds}, language=python, style=myStyle]{code/upper_bounds.py}
+
 \lstinputlisting[caption=Upper inverse, label={lst:upper_inverse}, language=python, style=myStyle]{code/upper_inverse.py}
 
-\section*{Detailed derivation}
-Solving for $L$:
-$$(L-\hat{L})^2 < \frac{2L\ln\frac{1}{\pi(h)\delta}}{n}$$
+\section*{Detailed calculation of quadratic roots}\label{sec:derivation}
 
-This is a quadratic inequality in $L$. Rewriting:
-$$L^2 - 2\hat{L}L + \hat{L}^2 - \frac{2L\ln\frac{1}{\pi(h)\delta}}{n} < 0$$
-$$L^2 - L\left(2\hat{L} + \frac{2\ln\frac{1}{\pi(h)\delta}}{n}\right) + \hat{L}^2 < 0$$
-
-Using the quadratic formula, the solutions to $aL^2 + bL + c = 0$ with $a = 1$, $b = -\left(2\hat{L} + \frac{2\ln\frac{1}{\pi(h)\delta}}{n}\right)$, and $c = \hat{L}^2$ are:
+Using the quadratic formula, the solutions to $aL^2 + bL + c = 0$ with
+\begin{equation*}
+a = 1, b = -\left(2\hat{L} + \frac{2\ln\frac{1}{\pi(h)\delta}}{n}\right), \,\text{and}\, c = \hat{L}^2
+\end{equation*}
+are:
 
 $$L = \frac{\left(2\hat{L} + \frac{2\ln\frac{1}{\pi(h)\delta}}{n}\right) \pm \sqrt{\left(2\hat{L} + \frac{2\ln\frac{1}{\pi(h)\delta}}{n}\right)^2 - 4\hat{L}^2}}{2}$$
 
-Simplifying the discriminant:
+We simplify the discriminant:
 \begin{align*}
 \left(2\hat{L} + \frac{2\ln\frac{1}{\pi(h)\delta}}{n}\right)^2 - 4\hat{L}^2 &= 4\hat{L}^2 + \frac{8\hat{L}\ln\frac{1}{\pi(h)\delta}}{n} + \frac{4(\ln\frac{1}{\pi(h)\delta})^2}{n^2} - 4\hat{L}^2 \\
 &= \frac{8\hat{L}\ln\frac{1}{\pi(h)\delta}}{n} + \frac{4(\ln\frac{1}{\pi(h)\delta})^2}{n^2}
 \end{align*}
 
-So the roots are:
+Hence the roots are:
 $$L = \frac{2\hat{L} + \frac{2\ln\frac{1}{\pi(h)\delta}}{n} \pm \sqrt{\frac{8\hat{L}\ln\frac{1}{\pi(h)\delta}}{n} + \frac{4(\ln\frac{1}{\pi(h)\delta})^2}{n^2}}}{2}$$
 
 Simplifying:
