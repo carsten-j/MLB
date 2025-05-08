@@ -1,3 +1,0 @@
-\contentsline {section}{\numberline {1}Numerical comparison of $\kl $ inequality with its relaxations and with Hoeffding's inequality (40 points) [Yevgeny]}{2}{section.1}%
-\contentsline {section}{\numberline {2}Occam's razor with $\kl $ inequality (30 points) [Yevgeny]}{5}{section.2}%
-\contentsline {section}{\numberline {3}Numerical comparison of the $\kl $ and split-$\kl $ inequalities (30 points) [Yevgeny]}{8}{section.3}%
