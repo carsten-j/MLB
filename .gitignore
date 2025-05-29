@@ -9,3 +9,4 @@ __pycache__/
 *.run.xml
 data/*
 .DS_Store
+HA6/*.npz
