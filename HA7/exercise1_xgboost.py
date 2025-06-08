@@ -32,8 +32,6 @@ print("\nStep 1 - Loading data and creating an 80/20 train-test split")
 
 df = pd.read_csv(DATA_FILE, header=None)
 
-df.info()
-
 X = df.iloc[:, :-1].values  # first 10 columns  -> features
 y = df.iloc[:, -1].values  # last  column     -> target  (red-shift)
 
@@ -148,6 +146,10 @@ xgb_best = XGBRegressor(
     objective="reg:squarederror", random_state=RANDOM_STATE, verbosity=0, **best_params
 )
 xgb_best.fit(X_train, y_train)
+
+# plot_importance(xgb_best)
+# plt.tight_layout()
+# plt.savefig("feature_importance_best_xgb.pdf", dpi=600, bbox_inches="tight")
 
 y_pred_best = xgb_best.predict(X_test)
 rmse_best = root_mean_squared_error(y_test, y_pred_best)
