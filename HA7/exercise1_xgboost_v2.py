@@ -1,7 +1,7 @@
 # exercise1_xgboost.py
 # ------------------------------------------------------------
 #  Machine Learning B – Home assignment 7 – Exercise 1
-#  Author: Carsten Jørgensen
+#  Author: <your-name>
 #  ------------------------------------------------------------
 #  This script solves sub-questions 1–3 (loading & splitting
 #  the data set, training a first XGBoost model, running a
@@ -23,11 +23,7 @@ from xgboost import XGBRegressor
 plt.style.use("ggplot")
 warnings.filterwarnings("ignore", category=UserWarning)
 RANDOM_STATE = 42  # global reproducibility switch
-DATA_FILE = "quasars.csv"
-
-# ToDo
-# consider standardscaler for the features
-# consider using a validation set for early stopping
+DATA_FILE = "quasars.csv"  # file delivered with the assignment
 
 # ------------------------------------------------------------
 # Step 1.  Load the data set and create *one* test split
@@ -111,17 +107,38 @@ print(f"  Test R²   (reference): {r2_ref:8.5f}")
 # ------------------------------------------------------------
 print("\nStep 3 - Grid-search for better hyper-parameters")
 
+# Enhanced parameter grid with more comprehensive hyperparameter tuning
 param_grid = {
-    "colsample_bytree": [0.5, 0.6],
-    "learning_rate": [
-        0.001,
-        0.01,
-        0.02,
-    ],
-    "max_depth": [8, 9, 10],
-    "n_estimators": [400, 500],
-    "reg_lambda": [1.5, 1.6],
+    "colsample_bytree": [0.4, 0.5, 0.6, 0.7],
+    "learning_rate": [0.01, 0.05, 0.1, 0.15],
+    "max_depth": [6, 8, 10, 12],
+    "n_estimators": [300, 500, 700],
+    "reg_lambda": [1.0, 1.5, 2.0],
+    "reg_alpha": [0.0, 0.1, 0.5, 1.0],  # L1 regularization
+    "subsample": [0.7, 0.8, 0.9],  # Row sampling
+    "min_child_weight": [1, 3, 5],  # Minimum instances per leaf
+    "gamma": [0, 0.1, 0.2],  # Minimum loss reduction
 }
+
+# ------------------------------------------------------------
+# Alternative: Two-stage grid search for better efficiency
+# Stage 1: Coarse grid search
+print("\n  Stage 1: Coarse grid search")
+coarse_param_grid = {
+    "colsample_bytree": [0.8, 1.0],
+    "learning_rate": [0.01, 0.1, 0.2],
+    "max_depth": [10, 12],
+    "n_estimators": [200, 300],
+    "reg_lambda": [0.5, 1.0, 2.0],
+    "reg_alpha": [0.0, 0.5, 1.0],
+    "subsample": [0.5, 0.7],
+    "min_child_weight": [5, 8],
+    "gamma": [0, 0.1],
+}
+
+# Use the coarse grid instead for faster execution
+# Comment out the enhanced grid above and use this for practical purposes
+param_grid = coarse_param_grid
 
 xgb_base = XGBRegressor(
     objective="reg:squarederror", random_state=RANDOM_STATE, verbosity=0
@@ -145,17 +162,46 @@ print("  Best parameter set  : ")
 print(json.dumps(best_params, indent=4))
 
 # ---- Train final XGBoost with the discovered configuration --
-print("\n  -> retraining best configuration on the *full* training data")
-xgb_best = XGBRegressor(
-    objective="reg:squarederror", random_state=RANDOM_STATE, verbosity=0, **best_params
+print("\n  -> retraining best configuration with early stopping")
+
+# Create validation split for early stopping
+X_tr_final, X_val_final, y_tr_final, y_val_final = train_test_split(
+    X_train, y_train, test_size=0.15, random_state=RANDOM_STATE
 )
-xgb_best.fit(X_train, y_train)
+
+xgb_best = XGBRegressor(
+    objective="reg:squarederror",
+    random_state=RANDOM_STATE,
+    verbosity=0,
+    early_stopping_rounds=50,  # Stop if no improvement for 50 rounds
+    eval_metric="rmse",
+    **best_params,
+)
+
+# Fit with early stopping
+xgb_best.fit(
+    X_tr_final, y_tr_final, eval_set=[(X_val_final, y_val_final)], verbose=False
+)
+
+# Retrain on full training data with optimal number of estimators
+optimal_estimators = xgb_best.best_iteration
+print(f"  Optimal number of estimators: {optimal_estimators}")
+
+# Final model with optimal estimators on full training data
+xgb_best_final = XGBRegressor(
+    objective="reg:squarederror",
+    random_state=RANDOM_STATE,
+    verbosity=0,
+    n_estimators=optimal_estimators,
+    **{k: v for k, v in best_params.items() if k != "n_estimators"},
+)
+xgb_best_final.fit(X_train, y_train)
 
 # plot_importance(xgb_best)
 # plt.tight_layout()
 # plt.savefig("feature_importance_best_xgb.pdf", dpi=600, bbox_inches="tight")
 
-y_pred_best = xgb_best.predict(X_test)
+y_pred_best = xgb_best_final.predict(X_test)
 rmse_best = root_mean_squared_error(y_test, y_pred_best)
 r2_best = r2_score(y_test, y_pred_best)
 
@@ -172,6 +218,49 @@ r2_knn = r2_score(y_test, y_pred_knn)
 
 print(f"\n  Baseline RMSE (k=5): {rmse_knn:8.5f}")
 print(f"  Baseline R²        : {r2_knn:8.5f}")
+
+# ------------------------------------------------------------
+# Alternative: Two-stage grid search for better efficiency
+# Stage 1: Coarse grid search
+print("\n  Stage 1: Coarse grid search")
+coarse_param_grid = {
+    "colsample_bytree": [0.4, 0.6, 0.8],
+    "learning_rate": [0.01, 0.1, 0.2],
+    "max_depth": [6, 8, 10],
+    "n_estimators": [300, 500],
+    "reg_lambda": [0.5, 1.0, 2.0],
+    "reg_alpha": [0.0, 0.5, 1.0],
+    "subsample": [0.7, 0.9],
+    "min_child_weight": [1, 5],
+    "gamma": [0, 0.1],
+}
+
+# Use the coarse grid instead for faster execution
+# Comment out the enhanced grid above and use this for practical purposes
+# param_grid = coarse_param_grid
+
+# ------------------------------------------------------------
+# Additional improvements for better RMSE
+# ------------------------------------------------------------
+
+# 1. Feature scaling (add to imports: from sklearn.preprocessing import RobustScaler)
+# Uncomment to add feature scaling:
+# scaler = RobustScaler()  # More robust to outliers than StandardScaler
+# X_train_scaled = scaler.fit_transform(X_train)
+# X_test_scaled = scaler.transform(X_test)
+
+# 2. Feature engineering ideas:
+# - Polynomial features of degree 2 for key features
+# - Interaction terms between highly correlated features
+# - Log transformations for skewed features
+
+# 3. Ensemble methods:
+# - Combine XGBoost with other algorithms (Random Forest, LightGBM)
+# - Use different random seeds and average predictions
+
+# 4. Advanced XGBoost techniques:
+# - Use 'dart' or 'gblinear' booster types
+# - Experiment with different objectives like 'reg:gamma' or 'reg:tweedie'
 
 # ------------------------------------------------------------
 #  Final comparison table
