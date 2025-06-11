@@ -2,7 +2,7 @@
 
 This is a **Machine Learning B** course project from DIKU (Department of Computer Science), University of Copenhagen, Spring 2025.
 
-The project contains 7 homework assignments (HA1-HA7) covering core ML topics:
+The project contains 7 homework assignments covering core ML topics:
 
 - **HA1**: Concentration inequalities, bounds theory, Occam's razor
 - **HA2**: Convex optimization fundamentals (cones, epigraphs)  
